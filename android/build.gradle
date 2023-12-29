@@ -20,3 +20,10 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+ext {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    defaultMultiDexEnabled = true
+//    myValue = signingConfigs.debug
+}
