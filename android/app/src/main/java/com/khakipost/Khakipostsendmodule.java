@@ -26,6 +26,8 @@ public class Khakipostsendmodule extends ReactContextBaseJavaModule {
     public void sendDirectSms(String phoneNumber, String msg,Callback callback) {
         try {  
             Log.d("RCNative",msg);
+            Log.d("RCNative",phoneNumber);
+            Log.d("RCNative",callback.toString());
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, msg, null, null);
             callback.invoke("MS");
