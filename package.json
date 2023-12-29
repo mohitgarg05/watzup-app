@@ -1,6 +1,6 @@
 {
   "name": "KhakiPost",
-  "version": "0.0.1",
+  "version": "1.1.10",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

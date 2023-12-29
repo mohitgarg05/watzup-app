@@ -25,6 +25,7 @@ public class Khakipostsendpackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         //this is where you register the module
         modules.add(new Khakipostsendmodule(reactContext));
+        modules.add(new Khakipostsendmodulewhatsapp(reactContext));
         return modules;
     }
 }
