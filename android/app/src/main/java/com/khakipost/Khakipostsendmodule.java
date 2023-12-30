@@ -4,8 +4,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.uimanager.IllegalViewOperationException; 
+import com.facebook.react.uimanager.IllegalViewOperationException;
 
+import android.annotation.SuppressLint;
 import android.telephony.SmsManager;
 import android.app.PendingIntent;
 import android.util.Log;
@@ -21,7 +22,8 @@ public class Khakipostsendmodule extends ReactContextBaseJavaModule {
     public String getName() { 
         return "DirectSms";
     }
- 
+
+    @SuppressLint("NewApi")
     @ReactMethod
     public void sendDirectSms(String phoneNumber, String msg,Callback callback) {
         try {  

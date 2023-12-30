@@ -36,9 +36,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MultiSelect from 'react-native-multiple-select';
 //import hm from './e01';
 
-var DirectSms = NativeModules.DirectSms;
+var DirectWhatsapp = NativeModules.DirectWhatsapp;
 var SendwithSub = NativeModules.SendwithSub;
-var KhakiWhatsappSend = NativeModules.KhakiWhatsappSend;
 const Stack = createStackNavigator();
 
 var sent_list = []
@@ -53,7 +52,7 @@ var isCampaign = 0
 BackgroundService.on('expiration',async ()=>{
     var date = new Date()
     Alert('dead',date);
-    
+
 })
 var g_whois = '';
 var g_email = '';
@@ -97,7 +96,7 @@ const getData= async (dbname) => {
 };
 const get_uni_key = async ()=>{
     var aid = await DeviceInfo.getAndroidId().then((aids)=>{ return aids});
-    var bid = await DeviceInfo.getBuildId().then((bids)=>{ return bids })  
+    var bid = await DeviceInfo.getBuildId().then((bids)=>{ return bids })
 
     return aid+"_"+bid
 }
@@ -106,7 +105,7 @@ const consync = () =>{
     var contac =  contacts.filter(element => element.displayName !== null)
     var sorted_con = contac.sort((a,b)=>a.displayName.localeCompare(b.displayName));
     var filtered_con = sorted_con.filter(element => element.phoneNumbers[0] !== undefined);
-    var newfiltered_con = filtered_con.filter(element => element.phoneNumbers[0].number !== undefined  || element.phoneNumbers[0].number.length !== 0);  
+    var newfiltered_con = filtered_con.filter(element => element.phoneNumbers[0].number !== undefined  || element.phoneNumbers[0].number.length !== 0);
     newfiltered_con.forEach((nfc,indx)=>{
         if(syncconls.includes({name:nfc.displayName,num:nfc.phoneNumbers[0].number+"_"+nfc.displayName})){
         }else{
@@ -152,7 +151,7 @@ const randomTask =  async taskdata =>{
                         });
                 }).catch((e)=>{
                     console.log(e)
-                })             
+                })
             }
             if(isCampaign === 1){
                 getData("exls").then(async (isexls)=>{
@@ -165,8 +164,8 @@ const randomTask =  async taskdata =>{
                                     console.log(j,"-------------------->",campdata[j],new Date().toLocaleString().split(',')[1],"_",rand)
                                     sendcampaign(campdata[j],cmsgid,cmsgtext)
                                     await cdelay(rand)
-                                    j++   
-                                }            
+                                    j++
+                                }
                             }
                         }
                     }else{
@@ -176,7 +175,7 @@ const randomTask =  async taskdata =>{
                                 console.log(j,"-------------------->",campdata[j],new Date().toLocaleString().split(',')[1],"_",rand)
                                 sendcampaign(campdata[j],cmsgid,cmsgtext)
                                 await cdelay(rand)
-                                j++                   
+                                j++
                             }
                         }
                     }
@@ -188,7 +187,7 @@ const randomTask =  async taskdata =>{
                             console.log(j,"-------------------->",campdata[j],new Date().toLocaleString().split(',')[1],"_",rand)
                             sendcampaign(campdata[j],cmsgid,cmsgtext)
                             await cdelay(rand)
-                            j++                   
+                            j++
                         }
                     }
                 })
@@ -199,10 +198,10 @@ const randomTask =  async taskdata =>{
                 if(camcount >= syncconls.length){
                     console.log(syncconls.length,camcount)
                 }else{
-                    await BackgroundService.updateNotification({taskDesc: 'Marketing Campaign '+camcount+'/100'}).catch(e=>console.log(e));        
+                    await BackgroundService.updateNotification({taskDesc: 'Marketing Campaign '+camcount+'/100'}).catch(e=>console.log(e));
                 }
             }else if(camcount >= 100 || camcount === syncconls.length){
-                await BackgroundService.updateNotification({taskDesc: 'Marketing Campaign Completed '+camcount+'/100'}).catch(e=>console.log(e));        
+                await BackgroundService.updateNotification({taskDesc: 'Marketing Campaign Completed '+camcount+'/100'}).catch(e=>console.log(e));
                 await cdelay(1000)
                 isCampaign = 0
                 isCampgo = false
@@ -225,7 +224,7 @@ const sendcampaign = async (payload,msid,msgtxt)=>{
             if(new_array.includes(payload.num.split("_")[0])){ console.log("already there ",payload.num.split("_")[0]," In ",new_array)
             }else{
                 ar_templist.push(payload.num.split("_")[0])
-                DirectSms.sendDirectSms(payload.num.split("_")[0],msgtxt.replace(/#_/g,"'"),(smsRes)=>{
+                DirectWhatsapp.sendDirectWhatsapp(payload.num.split("_")[0],msgtxt.replace(/#_/g,"'"),(smsRes)=>{
                     if(smsRes === "MS"){
                         storeData(msid,{donels:data.donels+"_"+payload.num.split("_")[0]}).then((sdata)=>{
                             if(sdata === "done"){
@@ -243,13 +242,13 @@ const sendcampaign = async (payload,msid,msgtxt)=>{
                     }else{
                         console.log("message failed",payload.num.split("_")[0]," In ",new_array)
                     }
-                });    
+                });
             }
     }).catch((es)=>{
         pusherrorlog('STARTMESSAGE_ELSE_ES',es)
         console.log("es------------------>",es)
         ar_templist.push(payload.num.split("_")[0])
-        DirectSms.sendDirectSms(payload.num.split("_")[0],msgtxt.replace(/#_/g,"'"),(smsRes)=>{
+        DirectWhatsapp.sendDirectWhatsapp(payload.num.split("_")[0],msgtxt.replace(/#_/g,"'"),(smsRes)=>{
             if(smsRes === "MS"){
                 storeData(msid,{donels:payload.num.split("_")[0]}).then((sdata)=>{
                     if(sdata === "done"){
@@ -283,12 +282,12 @@ const options = {
 const startB = async ()=>{
     try{
         await BackgroundService.start(randomTask,options);
-        
+
         // await BackgroundService.updateNotification({taskDesc: 'running -> '}).catch(e=>console.log(e));
     }catch(e){
         console.log(e)
     }
-    
+
 }
 
 
@@ -298,7 +297,7 @@ const stopB = async ()=>{
     }catch(e){
         console.log(e)
     }
-    
+
 }
 
 const pusherrorlog = (err_title,par_err) =>{
@@ -339,7 +338,7 @@ const pusherrorlog = (err_title,par_err) =>{
     }).catch((e)=>{
         console.log(e)
     })
-    
+
 }
 const askReques = async ()=>{
     try {
@@ -396,7 +395,7 @@ const askReques = async ()=>{
         console.warn(error);
         alert(error);
     }
-    
+
 }
 
 
@@ -404,7 +403,7 @@ const askReques = async ()=>{
 
 
 
-// page routers 
+// page routers
 function InitScreen({ navigation }){
     var [inipage,setinipage] = useState('HomeScreen');
     var [aids,setadis] = useState();
@@ -469,7 +468,7 @@ function InitScreen({ navigation }){
                             },
                         );
                         if(DeviceInfo.getSystemVersion() === "13" || DeviceInfo.getSystemVersion() === 13 || WRS === PermissionsAndroid.RESULTS.GRANTED){
-                            
+
                         console.log(6)
                             const RCL = await PermissionsAndroid.request(
                                 PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
@@ -515,7 +514,7 @@ function InitScreen({ navigation }){
                                                     console.log("jack",responseJson)
                                                     if(responseJson.status === "updated"){
                                                         navigation.navigate("HomeScreen")
-                                                        // navigation.navigate("ApkUpdate") 
+                                                        // navigation.navigate("ApkUpdate")
                                                     }else if(responseJson.status === "updatereq"){
                                                         navigation.navigate("ApkUpdate")
                                                     }else if(responseJson.status === "failed_S"){
@@ -528,12 +527,12 @@ function InitScreen({ navigation }){
                                                 }).catch(e=>{
 
                                                     console.log(11)
-                                                    
-                                                    navigation.navigate("HomeScreen") 
-                                                })    
+
+                                                    navigation.navigate("HomeScreen")
+                                                })
                                             }
                                         })
-                                    } 
+                                    }
                                 }).catch(es=>{
                                     setppass(false)
                                     console.log(12)
@@ -545,22 +544,22 @@ function InitScreen({ navigation }){
                             }
                         }else{
                             console.log(14)
-                            
+
                             setperr(false)
                         }
                     }else{
                         console.log(15)
-                            
+
                         setperr(false)
                     }
                 }else{
                     console.log(16,con_granted)
-                            
+
                     setperr(false)
                 }
             }else if(smsgranted === PermissionsAndroid.RESULTS.DENIED){
                 console.log(smsgranted)
-                setperr(false) 
+                setperr(false)
             }else if(smsgranted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN){
                 console.log(smsgranted)
                 setperr(false)
@@ -571,13 +570,13 @@ function InitScreen({ navigation }){
             console.log(error);
             pusherrorlog('permission_error',error)
         }
-    }                    
+    }
     useEffect(()=>{
         ask()
         console.log(perr)
         console.log(ppass)
     },[]);
-    
+
     return (
         <SafeAreaView style={styles.safebodycontainer}>
             <View style={styles.homebodycontainer}>
@@ -585,7 +584,7 @@ function InitScreen({ navigation }){
                 <Text style={styles.tagtxt1}>The Best Marketing App You Need To GROW Your Business</Text>
                 <View style={styles.viewhome}>
                 {ppass === true ?
-                    <ActivityIndicator /> : perr === false ? 
+                    <ActivityIndicator /> : perr === false ?
                     <TouchableOpacity style={styles.btn1} onPress={() => Linking.openSettings()}>
                         <Text style={styles.btntxt1}>Permission Required</Text>
                     </TouchableOpacity> : <TouchableOpacity style={styles.btn1} onPress={() => navigation.navigate('Login')}>
@@ -616,7 +615,7 @@ function CommonErrScreen({ route, navigation }){
     const {id,title,msg} = route.params;
     return (
         <SafeAreaView style={styles.safebodycontainer}>
-            
+
         <View style={styles.homebodycontainer}>
             <Text style={styles.logotxt2}>KhakiPost App</Text>
             <Text style={styles.tagtxt1}>Bringing Enterprise Marketing Weapons to SMB's & Startups</Text>
@@ -656,7 +655,7 @@ function SyncUpdate({ navigation }){
             var sorted_con = contacts.sort((a,b)=>a.displayName.localeCompare(b.displayName));
             var filtered_con = sorted_con.filter(element => element.phoneNumbers[0] !== undefined);
             var newfiltered_con = filtered_con.filter(element => element.phoneNumbers[0].number !== undefined  || element.phoneNumbers[0].number.length !== 0);
-            
+
             console.log(newfiltered_con)
             syncconls = newfiltered_con;
         }).catch((e)=>{
@@ -680,7 +679,7 @@ function LoginScreen({ navigation }){
     var [bids,setbdis] = useState();
     var [pnum,setpnum] = useState(pnum);
     var [email,setemail] = useState(email);
-    
+
     useEffect(()=>{
         DeviceInfo.getAndroidId().then((aid)=>{ setadis(aid); });
         DeviceInfo.getBuildId().then((bid)=>{ setbdis(bid); })
@@ -703,9 +702,9 @@ function LoginScreen({ navigation }){
         }).then((response) => response.json())
         .then((responseJson) => {
             if(responseJson.status === "done"){
-                navigation.navigate('OTPScreen',{m:mail,d:uni_key,n:num});    
+                navigation.navigate('OTPScreen',{m:mail,d:uni_key,n:num});
             }else{
-                navigation.navigate("CommonErr",{id:"relogin",title:"Need To Re-login",msg:"something went wrong please relogin"}) 
+                navigation.navigate("CommonErr",{id:"relogin",title:"Need To Re-login",msg:"something went wrong please relogin"})
             }
         });
     };
@@ -716,7 +715,7 @@ function LoginScreen({ navigation }){
                 <Text style={styles.tagtxt1}>Write Schedule & send</Text>
                 <TextInput style={[styles.txtdarl,styles.login_fields]} onChangeText={(mailid) => setemail(mailid)} value={email} placeholder={'Enter Registered email id'} placeholderTextColor={"black"} floatingPlaceholder validateOnChange enableErrors validate={['required', 'email']} validationMessage={['Field is required', 'Email is invalid',]}/>
                 <TextInput style={[styles.txtdarl,styles.login_fields]} onChangeText={(number) => setpnum(number)} value={pnum} placeholder={'Enter Registered Phone number'} placeholderTextColor={"black"} floatingPlaceholder validateOnChange enableErrors validate={['required', (value) => value.length > 9]} validationMessage={['Field is required', 'Phone number is invalid',]} maxLength={14} />
-                
+
                 <View style={styles.vm1}>
                     <TouchableOpacity style={styles.btn1} onPress={()=> {login_(email,pnum,DeviceInfo.getDeviceId()+"_"+aids+"_"+bids)}}>
                         <Text style={styles.btntxt1}>Login</Text>
@@ -728,7 +727,7 @@ function LoginScreen({ navigation }){
 }
 
 function OTPScreen({ route,navigation }){
-    
+
     var [otp1,setotp1] = useState('');
     const {m,n,d} = route.params;
     const handler = (otp_)=>{
@@ -751,12 +750,12 @@ function OTPScreen({ route,navigation }){
                 }).catch((e)=>{
                     pusherrorlog('RELOGIN_CATCH',e)
                     navigation.navigate("CommonErr",{id:"relogin",title:"Need To Re-login",msg:"something went wrong please relogin"})
-                            
+
                 })
             }else{
                 pusherrorlog('RELOGIN_ELSE',responseJson)
                 navigation.navigate("CommonErr",{id:"relogin",title:"Need To Re-login",msg:"something went wrong please relogin"})
-                            
+
             }
         });
     };
@@ -785,12 +784,12 @@ function HomeScreen({ navigation }){
     var [tbody,settbody] = useState('');
     var gtest = () =>{
         console.log(tbody.length)
-    } 
+    }
     useEffect(()=>{
         navigation.addListener('beforeRemove', (e) => {
            console.log(e)
            e.preventDefault();
-        })    
+        })
         getData('isbg').then((data)=>{
             if(!data){
                 AsyncStorage.setItem("isbg", JSON.stringify({isbs:true})).then((g)=>{
@@ -808,8 +807,8 @@ function HomeScreen({ navigation }){
             }
         }).catch(e=>{
             console.log(e)
-            pusherrorlog('ISBG_HOME_CATCH_GET',e)                  
-        })    
+            pusherrorlog('ISBG_HOME_CATCH_GET',e)
+        })
     },[]);
     const test_ = async ()=>{
         DeviceInfo.getPhoneNumber().then((phoneNumber) => {
@@ -840,30 +839,30 @@ function HomeScreen({ navigation }){
                                                     if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                         console.log("i",isrptd.rpls)
                                                     }else{
-                                                        DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                             if(smsRes === "MS"){
-                                
+
                                                             }else{
-                                
+
                                                             }
-                                                        });        
+                                                        });
                                                         var newlis =  isrptd.rpls
-                                                        console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                        console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                         AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                             console.log("ie",isrptd.rpls)
                                                         }).catch((e)=>{
                                                             pusherrorlog('ISREPEATED_HOME_CATCH_SET',e)
                                                             return "error"
                                                         })
-                                                    }   
+                                                    }
                                                 }else{
-                                                    DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
-                                                    });        
+                                                    });
                                                     AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
                                                         console.log("ie",isrptd.rpls)
                                                     }).catch((e)=>{
@@ -874,14 +873,14 @@ function HomeScreen({ navigation }){
                                             }).catch(isr=>{
                                                 pusherrorlog('ISREPEATED_HOME_CATCH_SET_ISR',isr)
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                                    DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
-                                                    });        
-                                                    console.log("ise",isrptd.rpls)           
+                                                    });
+                                                    console.log("ise",isrptd.rpls)
                                                 }).catch((e)=>{
                                                     pusherrorlog('ISREPEATED_HOME_CATCH_SET_CATCH_GET',e)
                                                     return "error"
@@ -889,39 +888,39 @@ function HomeScreen({ navigation }){
                                             })
                                         }else{
                                             console.log("dn")
-                                            DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
-                                            });        
-                                            
+                                            });
+
                                         }
                                     }else{
                                         console.log("doness")
-                                        DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
-                                        });        
-                                            
+                                        });
+
                                     }
-                                
+
                                 }).catch(e=>{
                                     console.log("missed",e)
                                     pusherrorlog('ISREPEATED_HOME_CATCH_GET',e)
-                                    DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
-                                    });        
+                                    });
                                 });
-                                // DirectSms.sendDirectSms(phoneNumber, ele.icl);
+                                // DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl);
                                 isincoming = 0;
                                 iscompleted = 0;
                                 isdailed = 0;
@@ -941,50 +940,50 @@ function HomeScreen({ navigation }){
                                                 if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                     console.log("i",isrptd.rpls)
                                                 }else{
-                                                    DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
-                                                    });        
+                                                    });
                                                     var newlis =  isrptd.rpls
-                                                    console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                    console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                     AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                         console.log("ie",isrptd.rpls)
                                                     }).catch((e)=>{
                                                         pusherrorlog('ISREPEATED_HOME_CATCH_SET_ELSE',e)
                                                         return "error"
                                                     })
-                                                }   
+                                                }
                                             }else{
-                                                DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
-                                                });        
+                                                });
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
                                                     console.log("ie",isrptd.rpls)
                                                 }).catch((e)=>{
                                                     pusherrorlog('ISREPEATED_HOME_CATCH_SET_E_ELSE',e)
-                                    
+
                                                     return "error"
                                                 })
                                             }
                                         }).catch(isr=>{
                                             pusherrorlog('ISREPEATED_HOME_CATCH_GET_ELSE',isr)
-                                    
+
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                                DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
-                                                });        
-                                                console.log("ise",isrptd.rpls)           
+                                                });
+                                                console.log("ise",isrptd.rpls)
                                             }).catch((e)=>{
                                                 pusherrorlog('ISREPEATED_HOME_CATCH_SET_ELSE_CATCH',e)
                                                 return "error"
@@ -992,38 +991,38 @@ function HomeScreen({ navigation }){
                                         })
                                     }else{
                                         console.log("dn")
-                                        DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
-                                        });        
-                                        
+                                        });
+
                                     }
                                 }else{
                                     console.log("doness")
-                                    DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
-                                    });        
-                                        
+                                    });
+
                                 }
-                            
+
                             }).catch(e=>{
                                 console.log("missed",e)
-                                DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                     if(smsRes === "MS"){
-        
+
                                     }else{
-        
+
                                     }
-                                });        
+                                });
                             });
-                            // DirectSms.sendDirectSms(phoneNumber, ele.icl);
+                            // DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl);
                             isincoming = 0;
                             iscompleted = 0;
                             isdailed = 0;
@@ -1044,30 +1043,30 @@ function HomeScreen({ navigation }){
                                             if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                 console.log("i",isrptd.rpls)
                                             }else{
-                                                DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
-                                                });        
+                                                });
                                                 var newlis =  isrptd.rpls
-                                                console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                     console.log("ie",isrptd.rpls)
                                                 }).catch((e)=>{
                                                     pusherrorlog('EXLS_HOME_CATCH_ISREP_SET',e)
                                                     return "error"
                                                 })
-                                            }   
+                                            }
                                         }else{
-                                            DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
-                                            });        
+                                            });
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
                                                 console.log("ie",isrptd.rpls)
                                             }).catch((e)=>{
@@ -1078,14 +1077,14 @@ function HomeScreen({ navigation }){
                                     }).catch(isr=>{
                                         pusherrorlog('EXLS_HOME_CATCH_ISREP_GET',isr)
                                         AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                            DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
-                                            });        
-                                            console.log("ise",isrptd.rpls)           
+                                            });
+                                            console.log("ise",isrptd.rpls)
                                         }).catch((e)=>{
                                             pusherrorlog('EXLS_HOME_CATCH_ISREP_GET_SET_CATCH',e)
                                             return "error"
@@ -1093,47 +1092,47 @@ function HomeScreen({ navigation }){
                                     })
                                 }else{
                                     console.log("dn")
-                                    DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
-                                    });        
-                                    
+                                    });
+
                                 }
                             }else{
                                 console.log("doness")
-                                DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                     if(smsRes === "MS"){
-        
+
                                     }else{
-        
+
                                     }
-                                });        
-                                    
+                                });
+
                             }
-                        
+
                         }).catch(e=>{
                             console.log("missed",e)
-                            DirectSms.sendDirectSms(phoneNumber, ele.icl,(smsRes)=>{
+                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl,(smsRes)=>{
                                 if(smsRes === "MS"){
-    
+
                                 }else{
-    
+
                                 }
-                            });        
+                            });
                         });
-                        // DirectSms.sendDirectSms(phoneNumber, ele.icl);
+                        // DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.icl);
                         isincoming = 0;
                         iscompleted = 0;
                         isdailed = 0;
                     }).catch((e)=>{
                         pusherrorlog('EXLS_HOME_CATCH_INCOMINGCALLTEMPLATE_GET',e)
-                                        
+
                         console.log(e)
                     })
-                })    
+                })
             }else if(isdailed === 1){
                 getData("exls").then((isexls)=>{
                     if(isexls.xls !== "undefined" || isexls.xls.length !== 0){
@@ -1144,7 +1143,7 @@ function HomeScreen({ navigation }){
                             isincoming = 0;
                             iscompleted = 0;
                             isdailed = 0;
-                                
+
                         }else{
                             getData("outgoingcalltemplate").then((ele)=>{
                                 console.log(ele)
@@ -1156,30 +1155,30 @@ function HomeScreen({ navigation }){
                                                     if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                         console.log("i",isrptd.rpls)
                                                     }else{
-                                                        DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                             if(smsRes === "MS"){
-                                
+
                                                             }else{
-                                
+
                                                             }
                                                         });
                                                         var newlis =  isrptd.rpls
-                                                        console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                        console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                         AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
-                                                        
+
                                                             console.log("ie",isrptd.rpls)
                                                         }).catch((e)=>{
                                                             pusherrorlog('EXLS_OUTGOING_HOME_CATCH_ISREP_SET',e)
-                                        
+
                                                             return "error"
                                                         })
-                                                    }   
+                                                    }
                                                 }else{
-                                                    DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
                                                     });
                                                     AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
@@ -1190,50 +1189,50 @@ function HomeScreen({ navigation }){
                                                 }
                                             }).catch(isr=>{
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                                    DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
                                                     });
-                                                    console.log("ise",isrptd.rpls)           
+                                                    console.log("ise",isrptd.rpls)
                                                 }).catch((e)=>{
                                                     return "error"
                                                 })
                                             })
                                         }else{
                                             console.log("dn")
-                                            DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
                                             });
                                         }
                                     }else{
                                         console.log("doness")
-                                        DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
-                                        });    
+                                        });
                                     }
-                                
+
                                 }).catch(e=>{
                                     console.log("missed",e)
-                                    DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
                                     });
                                 });
-            
+
                                 isincoming = 0;
                                 iscompleted = 0;
                                 isdailed = 0;
@@ -1253,27 +1252,27 @@ function HomeScreen({ navigation }){
                                                 if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                     console.log("i",isrptd.rpls)
                                                 }else{
-                                                    DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
                                                     });
                                                     var newlis =  isrptd.rpls
-                                                    console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                    console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                     AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                         console.log("ie",isrptd.rpls)
                                                     }).catch((e)=>{
                                                         return "error"
                                                     })
-                                                }   
+                                                }
                                             }else{
-                                                DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
                                                 });
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
@@ -1284,50 +1283,50 @@ function HomeScreen({ navigation }){
                                             }
                                         }).catch(isr=>{
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                                DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
                                                 });
-                                                console.log("ise",isrptd.rpls)           
+                                                console.log("ise",isrptd.rpls)
                                             }).catch((e)=>{
                                                 return "error"
                                             })
                                         })
                                     }else{
                                         console.log("dn")
-                                        DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
                                         });
                                     }
                                 }else{
                                     console.log("doness")
-                                    DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
-                                    });    
+                                    });
                                 }
-                            
+
                             }).catch(e=>{
                                 console.log("missed",e)
-                                DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                     if(smsRes === "MS"){
-        
+
                                     }else{
-        
+
                                     }
                                 });
                             });
-        
+
                             isincoming = 0;
                             iscompleted = 0;
                             isdailed = 0;
@@ -1347,27 +1346,27 @@ function HomeScreen({ navigation }){
                                             if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                 console.log("i",isrptd.rpls)
                                             }else{
-                                                DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
                                                 });
                                                 var newlis =  isrptd.rpls
-                                                console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                     console.log("ie",isrptd.rpls)
                                                 }).catch((e)=>{
                                                     return "error"
                                                 })
-                                            }   
+                                            }
                                         }else{
-                                            DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
                                             });
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
@@ -1378,50 +1377,50 @@ function HomeScreen({ navigation }){
                                         }
                                     }).catch(isr=>{
                                         AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                            DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
                                             });
-                                            console.log("ise",isrptd.rpls)           
+                                            console.log("ise",isrptd.rpls)
                                         }).catch((e)=>{
                                             return "error"
                                         })
                                     })
                                 }else{
                                     console.log("dn")
-                                    DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
                                     });
                                 }
                             }else{
                                 console.log("doness")
-                                DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                     if(smsRes === "MS"){
-        
+
                                     }else{
-        
+
                                     }
-                                });    
+                                });
                             }
-                        
+
                         }).catch(e=>{
                             console.log("missed",e)
-                            DirectSms.sendDirectSms(phoneNumber, ele.ocl,(smsRes)=>{
+                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber, ele.ocl,(smsRes)=>{
                                 if(smsRes === "MS"){
-    
+
                                 }else{
-    
+
                                 }
                             });
                         });
-    
+
                         isincoming = 0;
                         iscompleted = 0;
                         isdailed = 0;
@@ -1444,7 +1443,7 @@ function HomeScreen({ navigation }){
             console.log(phoneNumber)
             console.log("jack",event)
             console.log("----------------------------------------")
-        }else if (event === 'Dialing') { 
+        }else if (event === 'Dialing') {
             isdailed = 1;
             console.log("----------------------------------------")
             console.log(phoneNumber)
@@ -1457,7 +1456,7 @@ function HomeScreen({ navigation }){
                 console.log(event)
                 console.log("----------------------------------------")
             }else{
-                isdailed = 1;    
+                isdailed = 1;
             }
         }
         else if (event === 'Missed') {
@@ -1482,27 +1481,27 @@ function HomeScreen({ navigation }){
                                                 if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                     console.log("i",isrptd.rpls)
                                                 }else{
-                                                    DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                         if(smsRes === "MS"){
-                            
+
                                                         }else{
-                            
+
                                                         }
-                                                    });  
+                                                    });
                                                     var newlis =  isrptd.rpls
-                                                    console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                    console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                     AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                         console.log("ie",isrptd.rpls)
                                                     }).catch((e)=>{
                                                         return "error"
                                                     })
-                                                }   
+                                                }
                                             }else{
-                                                DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
                                                 });
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
@@ -1513,43 +1512,43 @@ function HomeScreen({ navigation }){
                                             }
                                         }).catch(isr=>{
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                                DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
                                                 });
-                                                console.log("ise",isrptd.rpls)           
+                                                console.log("ise",isrptd.rpls)
                                             }).catch((e)=>{
                                                 return "error"
                                             })
                                         })
                                     }else{
                                         console.log("dn")
-                                        DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
                                         });
                                         isreeep.push(phoneNumber)
                                     }
                                 }else{
                                     console.log("doness")
-                                    DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
                                     });
                                 }
-                            
+
                             }).catch(e=>{
                                 console.log("missed",e)
-                                DirectSms.sendDirectSms(phoneNumber,ele.mcl);
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl);
                             });
                         }).catch((e)=>{
                             console.log(e)
@@ -1567,27 +1566,27 @@ function HomeScreen({ navigation }){
                                             if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                                 console.log("i",isrptd.rpls)
                                             }else{
-                                                DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                     if(smsRes === "MS"){
-                        
+
                                                     }else{
-                        
+
                                                     }
-                                                });  
+                                                });
                                                 var newlis =  isrptd.rpls
-                                                console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                                console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                                 AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                     console.log("ie",isrptd.rpls)
                                                 }).catch((e)=>{
                                                     return "error"
                                                 })
-                                            }   
+                                            }
                                         }else{
-                                            DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
                                             });
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
@@ -1598,53 +1597,53 @@ function HomeScreen({ navigation }){
                                         }
                                     }).catch(isr=>{
                                         AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                            DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
                                             });
-                                            console.log("ise",isrptd.rpls)           
+                                            console.log("ise",isrptd.rpls)
                                         }).catch((e)=>{
                                             return "error"
                                         })
                                     })
                                 }else{
                                     console.log("dn")
-                                    DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                    DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                         if(smsRes === "MS"){
-            
+
                                         }else{
-            
+
                                         }
                                     }   );
                                     isreeep.push(phoneNumber)
                                 }
                             }else{
                                 console.log("doness")
-                                DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                     if(smsRes === "MS"){
-        
+
                                     }else{
-        
+
                                     }
                                 });
                             }
-                        
+
                         }).catch(e=>{
                             console.log("missed",e)
-                            DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                 if(smsRes === "MS"){
-    
+
                                 }else{
-    
+
                                 }
                             });
                         });
                     }).catch((e)=>{
                         console.log(e)
-                    })    
+                    })
                 }
             }).catch(ex=>{
                 getData("missedcalltemplate").then((ele)=>{
@@ -1658,27 +1657,27 @@ function HomeScreen({ navigation }){
                                         if(isrptd.rpls.includes(phoneNumber+"_"+new Date().toISOString().split("T")[0])){
                                             console.log("i",isrptd.rpls)
                                         }else{
-                                            DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                                 if(smsRes === "MS"){
-                    
+
                                                 }else{
-                    
+
                                                 }
-                                            });  
+                                            });
                                             var newlis =  isrptd.rpls
-                                            console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))        
+                                            console.log(newlis.push(phoneNumber+"_"+new Date().toISOString().split("T")[0]))
                                             AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:newlis})).then((g)=>{
                                                 console.log("ie",isrptd.rpls)
                                             }).catch((e)=>{
                                                 return "error"
                                             })
-                                        }   
+                                        }
                                     }else{
-                                        DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
                                         });
                                         AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
@@ -1689,43 +1688,43 @@ function HomeScreen({ navigation }){
                                     }
                                 }).catch(isr=>{
                                     AsyncStorage.setItem("isrepeated", JSON.stringify({rpls:[phoneNumber+"_"+new Date().toISOString().split("T")[0]]})).then((g)=>{
-                                        DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                             if(smsRes === "MS"){
-                
+
                                             }else{
-                
+
                                             }
                                         });
-                                        console.log("ise",isrptd.rpls)           
+                                        console.log("ise",isrptd.rpls)
                                     }).catch((e)=>{
                                         return "error"
                                     })
                                 })
                             }else{
                                 console.log("dn")
-                                DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                                DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                     if(smsRes === "MS"){
-        
+
                                     }else{
-        
+
                                     }
                                 });
                                 isreeep.push(phoneNumber)
                             }
                         }else{
                             console.log("doness")
-                            DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                            DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                 if(smsRes === "MS"){
-    
+
                                 }else{
-    
+
                                 }
                             });
                         }
-                    
+
                     }).catch(e=>{
                         console.log("missed",e)
-                        DirectSms.sendDirectSms(phoneNumber,ele.mcl,(smsRes)=>{
+                        DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                             if(smsRes === "MS"){
 
                             }else{
@@ -1757,16 +1756,13 @@ function HomeScreen({ navigation }){
                 })
             })
         }
-    },true, 
-    ()=>{}, 
+    },true,
+    ()=>{},
         {
             title: 'Phone State Permission',
             message: 'This app needs access to your phone state in order to react and/or to adapt to incoming calls.'
         }
     )
-    const testwhatsapp = async (testss) =>{
-        KhakiWhatsappSend.SendKhakiWhatsapp(testss,(ns)=>{console.log(ns)})
-    }
     return(
         <SafeAreaView style={styles.safebodycontainer}>
             <View style={styles.mainbodycontainer}>
@@ -1799,18 +1795,6 @@ function HomeScreen({ navigation }){
                         </View>
                         <Text style={[styles.txtdarl,styles.textcenter]}>Setting</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.hm1} onPress={() => KhakiWhatsappSend.SendKhakiWhatsapp("mello",(ns)=>{console.log(ns)})}>
-                        <View style={styles.homebtnicon}>
-                            <FontAwesomeIcon icon={ faUpload } size={ 32 } />
-                        </View>
-                        <Text style={[styles.txtdarl,styles.textcenter]}>whatsapp test</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.hm1} onPress={() => testwhatsapp("Anushka")}>
-                        <View style={styles.homebtnicon}>
-                            <FontAwesomeIcon icon={ faUpload } size={ 32 } />
-                        </View>
-                        <Text style={[styles.txtdarl,styles.textcenter]}>AC_Settings</Text>
-                    </TouchableOpacity>
                 </View>
                 <Text style={[styles.txtdarl]}>Support:</Text>
                 <TouchableOpacity onPress={() => Linking.openURL('tel://+91-8422003305')}>
@@ -1828,7 +1812,7 @@ function HomeScreen({ navigation }){
 
 
 function LoadingScreen({ route,navigation }){
-    var {title,message,page} = route.params;  
+    var {title,message,page} = route.params;
     useEffect(()=>{
         setTimeout(function(){
             if(page === "Template"){
@@ -1874,7 +1858,7 @@ function CreateTemplates({ navigation }){
                 if(responseJson.status === "spass"){
                     console.log(data)
                     console.log(responseJson)
-                    navigation.navigate('LoadingScreen',{title:"Adding New Template",message:"...",page:"Template"});    
+                    navigation.navigate('LoadingScreen',{title:"Adding New Template",message:"...",page:"Template"});
                 }else{
                     console.log(responseJson)
                     // navigation.navigate('FaildScreen',{});
@@ -1894,7 +1878,7 @@ function CreateTemplates({ navigation }){
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
-        
+
     );
 }
 
@@ -1944,7 +1928,7 @@ function Startmessage({ route , navigation }){
         // }).catch((e)=>{
         //     console.log(e)
         //     pusherrorlog('STARTMESSAGE_ERR',e)
-                                        
+
         // })
         campdata = syncconls
         isCampaign = 1
@@ -1954,7 +1938,7 @@ function Startmessage({ route , navigation }){
             setsentx(camcount)
             setsentlog(entry)
             if(camcount === campdata.length || isCampaign === 0) clearInterval(updateloop);
-        }, 2000);    
+        }, 2000);
         return () =>{
             console.log("clear")
             clearInterval(updateloop)
@@ -1979,7 +1963,7 @@ function Templateoption({ route ,navigation }){
     var {msgtxt,msid,whois} = route.params;
     const tt = () =>{
         syncconls.forEach((ds)=>{
-            console.log(ds)    
+            console.log(ds)
         })
         console.log(campdata.length)
         // console.log(syncconls)
@@ -2012,7 +1996,7 @@ function Templateoption({ route ,navigation }){
                 //     if(resJson.status === "meta_ADDED"){
                 //         Contacts.getAll().then((contacts)=>{
                 //             var sorted_con = contacts.sort((a,b)=>a.displayName.localeCompare(b.displayName));
-                            
+
                 //             const intv = setInterval(gen => {
                 //                 const n = gen.next()
                 //                 if (n.done) return clearInterval(intv)
@@ -2032,14 +2016,14 @@ function Templateoption({ route ,navigation }){
                 //                                         whis:whois,
                 //                                     })
                 //                                 }).then((response) => response.json()).then((resJson)=>{
-                                                   
+
                 //                                 }).catch((e)=>{
                 //                                     console.log('so_error',e)
                 //                                 })
                 //                             }else{
                 //                                 console.log("jese",n.value.displayName+"_"+n.value.phoneNumbers[0].number)
                 //                             }
-                //                         } 
+                //                         }
                 //             },250, sorted_con[Symbol.iterator]())
                 //         }).catch((ce)=>{
                 //             pusherrorlog('con_read_failed',ce)
@@ -2091,7 +2075,7 @@ function Templatelist({ list_of_template }){
             }).then((response) => response.json())
             .then((responseJson) => {
                 if(responseJson.status === "gpass"){
-                    navigation.navigate('LoadingScreen',{title:"Deleting Template",message:"...",page:"Template"});        
+                    navigation.navigate('LoadingScreen',{title:"Deleting Template",message:"...",page:"Template"});
                 }else{
                     console.log(responseJson)
                 }
@@ -2108,22 +2092,22 @@ function Templatelist({ list_of_template }){
                 <View>
                     <Text style={styles.tagtxt3} >{list_of_template.message_name}</Text>
                     <Text style={[styles.txtdarl]}>{list_of_template.dateofcreation.split("T")[0]}</Text>
-                </View>        
-            </TouchableOpacity> 
+                </View>
+            </TouchableOpacity>
             <TouchableOpacity style={[styles.bgprimary,styles.mR1,styles.p1,styles.br1]} onPress={()=>navigation.navigate('TemplateOpt',{msgtxt:list_of_template?.message,msid:list_of_template?.templateid,whois:list_of_template?.whois})}>
                 <View>
                     <Text style={[styles.btntxt1]} >Start</Text>
-                </View>        
-            </TouchableOpacity> 
+                </View>
+            </TouchableOpacity>
             <TouchableOpacity style={[styles.bgdanger,styles.p1,styles.br1]} onPress={()=>delTemp(list_of_template?.templateid,list_of_template?.whois)}>
                 <View>
                     <Text style={[styles.btntxt1]}><FontAwesomeIcon icon={ faTrash } size={ 22 } /></Text>
-                </View>        
-            </TouchableOpacity> 
-            
+                </View>
+            </TouchableOpacity>
+
         </View>
-        
-    );   
+
+    );
 }
 
 function Templates({ navigation }){
@@ -2166,9 +2150,9 @@ function Templates({ navigation }){
             <View>
                 <TouchableOpacity style={[styles.btn1,styles.vm1]} onPress={()=> {navigation.navigate('CreateTemplates')}}>
                     <Text style={styles.btntxt1}>Add Template</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
                 <View>
-                    {lcheck === true ? 
+                    {lcheck === true ?
                         <FlatList
                             data={listoftemplate}
                             renderItem={({item}) => <Templatelist list_of_template={item} />}
@@ -2192,7 +2176,7 @@ function Startmessagefile({ route , navigation }){
     var [sendc,setsendc] = useState(0);
     var [totalc,settotalc] = useState(0);
     const [sentlog,setsentlog] = useState('');
-    
+
     var failedtosynclist = [];
     var notvalidforsms = [];
     var jck = 0;
@@ -2238,11 +2222,11 @@ function Startmessagefile({ route , navigation }){
                                             uid:data.un,
                                         })
                                     }).then((response) => response.json()).then((resJson)=>{
-                                        console.log(n.value,intv)        
+                                        console.log(n.value,intv)
                                         jck +=1
                                         setsentlog(sentlog => sentlog+="message sent "+n.value+"\n");
-                                        DirectSms.sendDirectSms(n.value, msg.replace(/#_/g,"'")).then(()=>{
-                                                
+                                        DirectWhatsapp.sendDirectWhatsapp(n.value, msg.replace(/#_/g,"'")).then(()=>{
+
                                         });
                                         setsendc(jck);
                                         }).catch((e)=>{
@@ -2250,11 +2234,11 @@ function Startmessagefile({ route , navigation }){
                                         })
                                 }else{
                                     console.log(n.value)
-                                    notvalidforsms.push(n.value);   
+                                    notvalidforsms.push(n.value);
                                 }
-                            } 
+                            }
                         }else{
-                            clearInterval(intv) 
+                            clearInterval(intv)
                         }
                     },300, cls[Symbol.iterator]())
                 }else{
@@ -2289,10 +2273,10 @@ function Startmessagefile({ route , navigation }){
                                                 uid:data.un,
                                             })
                                         }).then((response) => response.json()).then((resJson)=>{
-                                            console.log(n.value,intv)        
+                                            console.log(n.value,intv)
                                             jck +=1
                                             setsentlog(sentlog => sentlog+="message sent "+n.value+"\n");
-                                            DirectSms.sendDirectSms(n.value, msg.replace(/#_/g,"'")).then(()=>{
+                                            DirectWhatsapp.sendDirectWhatsapp(n.value, msg.replace(/#_/g,"'")).then(()=>{
 
                                             });
                                             setsendc(jck);
