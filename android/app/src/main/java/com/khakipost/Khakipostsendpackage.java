@@ -1,11 +1,10 @@
 package com.khakipost;
- 
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.khakipost.Khakipostsendmodule;
- 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

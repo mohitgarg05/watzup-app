@@ -1733,7 +1733,7 @@ function HomeScreen({ navigation }){
                         });
                     });
                 }).catch((e)=>{
-                    fetch(`http://senderapp.xysales.com/report/${data.did}`, {
+                    fetch(`http://senderapp.xysales.com/report/`, {
                         method: 'POST',
                         headers: {
                             Accept: 'application/json',

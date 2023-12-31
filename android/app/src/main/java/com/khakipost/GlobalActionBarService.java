@@ -16,10 +16,16 @@ package com.khakipost;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+
+import com.khakipost.broadcastreceiver.PhonecallReceiver;
 
 import java.util.List;
 
@@ -27,30 +33,41 @@ import java.util.List;
 @SuppressLint("NewApi")
 public class GlobalActionBarService extends AccessibilityService {
 
+    public static GlobalActionBarService accessibilityService;
+    private PhonecallReceiver receiver;
     @Override
     public void onCreate() {
         super.onCreate();
 
         System.out.println("OSAMA onCreate");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
+        filter.addAction("android.intent.action.PHONE_STATE");
 
+        receiver = new PhonecallReceiver(this);
+
+        registerReceiver(receiver,filter);
+        if (accessibilityService == null) {
+            accessibilityService = this;
+        }
+//        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(i);
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         System.out.println("OSAMA onDestroy");
+        unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        sendWhatsAppMsg();
-    }
-
-    public void sendWhatsAppMsg() {
-
+        System.out.println("OSAMA onAccessibilityEvent Start");
         if (getRootInActiveWindow () == null) {
-            return;
-        }
+        return;
+    }
 
         AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap (getRootInActiveWindow ());
 
@@ -65,7 +82,7 @@ public class GlobalActionBarService extends AccessibilityService {
         if (messageField.getText() == null || messageField.getText().length() == 0) { // So your service doesn't process any message, but the ones ending your apps suffix
             return;
         } else {
-            messageField.getText().toString();
+            messageField.getText();
         }
 
         // Whatsapp send button id
@@ -91,6 +108,7 @@ public class GlobalActionBarService extends AccessibilityService {
             Thread.sleep (500);  // same hack as above
         } catch (InterruptedException ignored) {}
         performGlobalAction (GLOBAL_ACTION_BACK);
+        System.out.println("OSAMA onAccessibilityEvent End");
     }
 
     @Override
