@@ -28,12 +28,12 @@ import java.util.List;
 
 public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
 
-    GlobalActionBarService accessibilityService;
+//    GlobalActionBarService accessibilityService;
 
     public Khakipostsendmodulewhatsapp(ReactApplicationContext reactContext) {
         super(reactContext);
         //required by React Native
-accessibilityService = GlobalActionBarService.accessibilityService;
+//accessibilityService = GlobalActionBarService.accessibilityService;
     }
  
     @NonNull
@@ -81,51 +81,51 @@ accessibilityService = GlobalActionBarService.accessibilityService;
 //        else{
 //            String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
 
-                new Handler().postDelayed(() -> {
-                    if (accessibilityService.getRootInActiveWindow() == null) {
-                    return;
-                }
-
-                    AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap (accessibilityService.getRootInActiveWindow ());
-                    // Whatsapp Message EditText id
-                    List<AccessibilityNodeInfoCompat> messageNodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/entry");
-                    if (messageNodeList == null || messageNodeList.isEmpty ()) {
-                        return;
-                    }
-
-                    // check if the whatsapp message EditText field is filled with text and ending with your suffix (explanation above)
-                    AccessibilityNodeInfoCompat messageField = messageNodeList.get (0);
-                    if (messageField.getText() == null || messageField.getText().length() == 0) { // So your service doesn't process any message, but the ones ending your apps suffix
-                        return;
-                    } else {
-                        messageField.getText();
-                    }
-
-                    // Whatsapp send button id
-                    List<AccessibilityNodeInfoCompat> sendMessageNodeInfoList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/send");
-                    if (sendMessageNodeInfoList == null || sendMessageNodeInfoList.isEmpty ()) {
-                        return;
-                    }
-
-                    AccessibilityNodeInfoCompat sendMessageButton = sendMessageNodeInfoList.get (0);
-                    if (!sendMessageButton.isVisibleToUser ()) {
-                        return;
-                    }
-
-                    // Now fire a click on the send button
-                    sendMessageButton.performAction (AccessibilityNodeInfo.ACTION_CLICK);
-
-                    // Now go back to your app by clicking on the Android back button twice:
-                    // First one to leave the conversation screen
-                    // Second one to leave whatsapp
-                    try {
-                        Thread.sleep (500); // hack for certain devices in which the immediate back click is too fast to handle
-                        accessibilityService.performGlobalAction (GLOBAL_ACTION_BACK);
-                        Thread.sleep (500);  // same hack as above
-                    } catch (InterruptedException ignored) {}
-                    accessibilityService.performGlobalAction (GLOBAL_ACTION_BACK);
-                    System.out.println("OSAMA onReceive AFTER");
-                }, 8000);
+//                new Handler().postDelayed(() -> {
+//                    if (accessibilityService.getRootInActiveWindow() == null) {
+//                    return;
+//                }
+//
+//                    AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap (accessibilityService.getRootInActiveWindow ());
+//                    // Whatsapp Message EditText id
+//                    List<AccessibilityNodeInfoCompat> messageNodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/entry");
+//                    if (messageNodeList == null || messageNodeList.isEmpty ()) {
+//                        return;
+//                    }
+//
+//                    // check if the whatsapp message EditText field is filled with text and ending with your suffix (explanation above)
+//                    AccessibilityNodeInfoCompat messageField = messageNodeList.get (0);
+//                    if (messageField.getText() == null || messageField.getText().length() == 0) { // So your service doesn't process any message, but the ones ending your apps suffix
+//                        return;
+//                    } else {
+//                        messageField.getText();
+//                    }
+//
+//                    // Whatsapp send button id
+//                    List<AccessibilityNodeInfoCompat> sendMessageNodeInfoList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/send");
+//                    if (sendMessageNodeInfoList == null || sendMessageNodeInfoList.isEmpty ()) {
+//                        return;
+//                    }
+//
+//                    AccessibilityNodeInfoCompat sendMessageButton = sendMessageNodeInfoList.get (0);
+//                    if (!sendMessageButton.isVisibleToUser ()) {
+//                        return;
+//                    }
+//
+//                    // Now fire a click on the send button
+//                    sendMessageButton.performAction (AccessibilityNodeInfo.ACTION_CLICK);
+//
+//                    // Now go back to your app by clicking on the Android back button twice:
+//                    // First one to leave the conversation screen
+//                    // Second one to leave whatsapp
+//                    try {
+//                        Thread.sleep (500); // hack for certain devices in which the immediate back click is too fast to handle
+//                        accessibilityService.performGlobalAction (GLOBAL_ACTION_BACK);
+//                        Thread.sleep (500);  // same hack as above
+//                    } catch (InterruptedException ignored) {}
+//                    accessibilityService.performGlobalAction (GLOBAL_ACTION_BACK);
+//                    System.out.println("OSAMA onReceive AFTER");
+//                }, 8000);
 
 //            }
             } catch (Exception e){
@@ -152,7 +152,7 @@ accessibilityService = GlobalActionBarService.accessibilityService;
 //            }
             // return ;
         } catch (Exception ex) {
-            callback.invoke(ex);
+//            callback.invoke(ex);
         } 
     }
     
