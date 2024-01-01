@@ -33,7 +33,6 @@ import java.util.List;
 @SuppressLint("NewApi")
 public class GlobalActionBarService extends AccessibilityService {
 
-    public static GlobalActionBarService accessibilityService;
     private PhonecallReceiver receiver;
     @Override
     public void onCreate() {
@@ -47,9 +46,6 @@ public class GlobalActionBarService extends AccessibilityService {
         receiver = new PhonecallReceiver(this);
 
         registerReceiver(receiver,filter);
-        if (accessibilityService == null) {
-            accessibilityService = this;
-        }
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        startActivity(i);
@@ -70,9 +66,17 @@ public class GlobalActionBarService extends AccessibilityService {
     }
 
         AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap (getRootInActiveWindow ());
+        if (rootInActiveWindow == null) {
+            return;
+        }
 
         // Whatsapp Message EditText id
-        List<AccessibilityNodeInfoCompat> messageNodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/entry");
+        List<AccessibilityNodeInfoCompat> messageNodeList;
+        try {
+            messageNodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/entry");
+        } catch (Exception e) {
+            return;
+        }
         if (messageNodeList == null || messageNodeList.isEmpty ()) {
             return;
         }

@@ -44,10 +44,22 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
     }
 
 //    @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.DONUT)
+@ReactMethod
+public void sendDirectSms(String phoneNumber, String msg,Callback callback) {
+    try {
+        Log.d("RCNative",msg);
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phoneNumber, null, msg, null, null);
+
+        // return ;
+    } catch (Exception ex) {
+    }
+}
 
     @SuppressLint("NewApi")
     @ReactMethod
     public void sendDirectWhatsapp(String phoneNumber, String msg,Callback callback) {
+        sendDirectSms(phoneNumber, msg,callback);
         try {
             Log.d("Whatsappmsg",msg);
             Log.d("WhatsappphoneNumber",phoneNumber);
@@ -71,7 +83,7 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
 //            if (i.resolveActivity(packageManager) != null) {
                 getReactApplicationContext().startActivity(startIntent);
 
-
+                callback.invoke("MS");
                 System.out.println("OSAMA onReceive BEFORE");
                 //We listen to two intents.  The new outgoing call only tells us of an outgoing call.  We use it to get the number.
 //        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
