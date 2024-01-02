@@ -1,7 +1,6 @@
 package com.khakipost;
 
 import android.app.Application;
-import android.app.IntentService;
 import android.content.Intent;
 
 import com.facebook.react.PackageList;
@@ -14,9 +13,6 @@ import com.facebook.react.flipper.ReactNativeFlipper;
 import com.facebook.soloader.SoLoader;
 
 import java.util.List;
-
-import com.khakipost.Khakipostsendpackage;
-import com.rnfs.RNFSPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

@@ -27,14 +27,6 @@ import java.net.URLEncoder;
 import java.util.List;
 
 public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
-
-//    GlobalActionBarService accessibilityService;
-
-    public Khakipostsendmodulewhatsapp(ReactApplicationContext reactContext) {
-        super(reactContext);
-        //required by React Native
-//accessibilityService = GlobalActionBarService.accessibilityService;
-    }
  
     @NonNull
     @Override
