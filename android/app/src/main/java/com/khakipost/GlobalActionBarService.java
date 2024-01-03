@@ -43,7 +43,7 @@ public class GlobalActionBarService extends AccessibilityService {
         filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
         filter.addAction("android.intent.action.PHONE_STATE");
 
-        receiver = new PhonecallReceiver(this);
+        receiver = new PhonecallReceiver();
 
         registerReceiver(receiver,filter);
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -66,9 +66,6 @@ public class GlobalActionBarService extends AccessibilityService {
     }
 
         AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap (getRootInActiveWindow ());
-        if (rootInActiveWindow == null) {
-            return;
-        }
 
         // Whatsapp Message EditText id
         List<AccessibilityNodeInfoCompat> messageNodeList;
