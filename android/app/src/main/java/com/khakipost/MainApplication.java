@@ -15,6 +15,7 @@ import com.facebook.soloader.SoLoader;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+    public static boolean shouldSend = false;
 
     private final ReactNativeHost mReactNativeHost =
             new DefaultReactNativeHost(this) {

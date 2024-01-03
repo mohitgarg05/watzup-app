@@ -67,7 +67,10 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
                 startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startIntent.setData(urlData);
 //            if (i.resolveActivity(packageManager) != null) {
+
+                MainApplication.shouldSend = true;
                 context.startActivity(startIntent);
+
                 callback.invoke("MS");
                 System.out.println("OSAMA onReceive BEFORE");
 

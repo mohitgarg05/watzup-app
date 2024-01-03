@@ -97,8 +97,13 @@ public class GlobalActionBarService extends AccessibilityService {
             return;
         }
 
+        if (MainApplication.shouldSend == false){
+            return;
+        }
+
         // Now fire a click on the send button
         sendMessageButton.performAction (AccessibilityNodeInfo.ACTION_CLICK);
+        MainApplication.shouldSend = false;
 
         // Now go back to your app by clicking on the Android back button twice:
         // First one to leave the conversation screen
