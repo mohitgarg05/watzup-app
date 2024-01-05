@@ -16,10 +16,7 @@ package com.khakipost;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -34,6 +31,7 @@ import java.util.List;
 public class GlobalActionBarService extends AccessibilityService {
 
     private PhonecallReceiver receiver;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,7 +43,7 @@ public class GlobalActionBarService extends AccessibilityService {
 
         receiver = new PhonecallReceiver();
 
-        registerReceiver(receiver,filter);
+        registerReceiver(receiver, filter);
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        startActivity(i);
@@ -61,25 +59,25 @@ public class GlobalActionBarService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         System.out.println("OSAMA onAccessibilityEvent Start");
-        if (getRootInActiveWindow () == null) {
-        return;
-    }
+        if (getRootInActiveWindow() == null) {
+            return;
+        }
 
-        AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap (getRootInActiveWindow ());
+        AccessibilityNodeInfoCompat rootInActiveWindow = AccessibilityNodeInfoCompat.wrap(getRootInActiveWindow());
 
         // Whatsapp Message EditText id
         List<AccessibilityNodeInfoCompat> messageNodeList;
         try {
-            messageNodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/entry");
+            messageNodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.whatsapp:id/entry");
         } catch (Exception e) {
             return;
         }
-        if (messageNodeList == null || messageNodeList.isEmpty ()) {
+        if (messageNodeList == null || messageNodeList.isEmpty()) {
             return;
         }
 
         // check if the whatsapp message EditText field is filled with text and ending with your suffix (explanation above)
-        AccessibilityNodeInfoCompat messageField = messageNodeList.get (0);
+        AccessibilityNodeInfoCompat messageField = messageNodeList.get(0);
         if (messageField.getText() == null || messageField.getText().length() == 0) { // So your service doesn't process any message, but the ones ending your apps suffix
             return;
         } else {
@@ -87,33 +85,34 @@ public class GlobalActionBarService extends AccessibilityService {
         }
 
         // Whatsapp send button id
-        List<AccessibilityNodeInfoCompat> sendMessageNodeInfoList = rootInActiveWindow.findAccessibilityNodeInfosByViewId ("com.whatsapp:id/send");
-        if (sendMessageNodeInfoList == null || sendMessageNodeInfoList.isEmpty ()) {
+        List<AccessibilityNodeInfoCompat> sendMessageNodeInfoList = rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.whatsapp:id/send");
+        if (sendMessageNodeInfoList == null || sendMessageNodeInfoList.isEmpty()) {
             return;
         }
 
-        AccessibilityNodeInfoCompat sendMessageButton = sendMessageNodeInfoList.get (0);
-        if (!sendMessageButton.isVisibleToUser ()) {
+        AccessibilityNodeInfoCompat sendMessageButton = sendMessageNodeInfoList.get(0);
+        if (!sendMessageButton.isVisibleToUser()) {
             return;
         }
 
-        if (MainApplication.shouldSend == false){
+        if (getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).getBoolean("shouldSend", false) == false) {
             return;
         }
 
         // Now fire a click on the send button
-        sendMessageButton.performAction (AccessibilityNodeInfo.ACTION_CLICK);
-        MainApplication.shouldSend = false;
+        sendMessageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).edit().putBoolean("shouldSend", false).apply();
 
         // Now go back to your app by clicking on the Android back button twice:
         // First one to leave the conversation screen
         // Second one to leave whatsapp
         try {
-            Thread.sleep (500); // hack for certain devices in which the immediate back click is too fast to handle
-            performGlobalAction (GLOBAL_ACTION_BACK);
-            Thread.sleep (500);  // same hack as above
-        } catch (InterruptedException ignored) {}
-        performGlobalAction (GLOBAL_ACTION_BACK);
+            Thread.sleep(500); // hack for certain devices in which the immediate back click is too fast to handle
+            performGlobalAction(GLOBAL_ACTION_BACK);
+            Thread.sleep(500);  // same hack as above
+        } catch (InterruptedException ignored) {
+        }
+        performGlobalAction(GLOBAL_ACTION_BACK);
         System.out.println("OSAMA onAccessibilityEvent End");
     }
 

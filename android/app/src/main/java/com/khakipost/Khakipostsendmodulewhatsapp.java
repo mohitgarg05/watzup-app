@@ -5,6 +5,7 @@ import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BA
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -68,7 +69,7 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
                 startIntent.setData(urlData);
 //            if (i.resolveActivity(packageManager) != null) {
 
-                MainApplication.shouldSend = true;
+                getReactApplicationContext().getSharedPreferences("KhakiPostConstants", Context.MODE_PRIVATE).edit().putBoolean("shouldSend", true).apply();
                 context.startActivity(startIntent);
 
                 callback.invoke("MS");
