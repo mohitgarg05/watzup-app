@@ -34,6 +34,7 @@ import CallDetectorManager from 'react-native-call-detection';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MultiSelect from 'react-native-multiple-select';
+import CallLogs from 'react-native-call-log';
 //import hm from './e01';
 
 var DirectWhatsapp = NativeModules.DirectWhatsapp;
@@ -467,9 +468,9 @@ function InitScreen({ navigation }){
                               buttonPositive: 'OK',
                             },
                         );
-                        if(DeviceInfo.getSystemVersion() === "13" || DeviceInfo.getSystemVersion() === 13 || WRS === PermissionsAndroid.RESULTS.GRANTED){
+                        if(parseInt(DeviceInfo.getSystemVersion()) >= 13 || WRS === PermissionsAndroid.RESULTS.GRANTED){
 
-                        console.log(6)
+                        console.log('OSAMA 6')
                             const RCL = await PermissionsAndroid.request(
                                 PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
                                 {
