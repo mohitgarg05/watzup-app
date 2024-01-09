@@ -101,7 +101,8 @@ public class GlobalActionBarService extends AccessibilityService {
 
         // Now fire a click on the send button
         sendMessageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).edit().putBoolean("shouldSend", false).apply();
+        //first was apply changed to commit so working
+        getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).edit().putBoolean("shouldSend", false).commit();
 
         // Now go back to your app by clicking on the Android back button twice:
         // First one to leave the conversation screen

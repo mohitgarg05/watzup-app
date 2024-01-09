@@ -24,6 +24,26 @@ public class PhonecallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        Intent startIntent = new Intent();
+        try {
+            System.out.println("OSAMA intent data" + intent.getData().toString());
+            Uri url = intent.getData();
+            startIntent.setAction(Intent.ACTION_VIEW);
+            startIntent.setPackage("com.whatsapp");
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startIntent.setData(url);
+//            if (i.resolveActivity(packageManager) != null) {
+
+            //first was apply changed to commit so working
+            context.getSharedPreferences("KhakiPostConstants", Context.MODE_PRIVATE).edit().putBoolean("shouldSend", true).commit();
+            context.startActivity(startIntent);
+
+//            callback.invoke("MS");
+            System.out.println("OSAMA PhonecallReceiver onReceive BEFORE");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -2,8 +2,11 @@ package com.khakipost;
 
 import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK;
 
+import static com.khakipost.MainApplication.appContext;
+
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -69,11 +72,23 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
                 startIntent.setData(urlData);
 //            if (i.resolveActivity(packageManager) != null) {
 
-                getReactApplicationContext().getSharedPreferences("KhakiPostConstants", Context.MODE_PRIVATE).edit().putBoolean("shouldSend", true).apply();
-                context.startActivity(startIntent);
+                //first was apply changed to commit so working
+                appContext.getSharedPreferences("KhakiPostConstants", Context.MODE_PRIVATE).edit().putBoolean("shouldSend", true).commit();
+                if (isAppRunning(appContext, "com.khakipost")) {
+                    System.out.println("OSAMA Khakipostsendmodulewhatsapp onReceive isAppRunning true BEFORE");
+                    appContext.startActivity(startIntent);
+                } else {
+                    System.out.println("OSAMA Khakipostsendmodulewhatsapp onReceive isAppRunning false BEFORE");
+                    Intent broadcastIntent = new Intent();
+                    broadcastIntent.setData(urlData);
+                    broadcastIntent.setAction("android.intent.action.NEW_OUTGOING_CALL");
+                    broadcastIntent.setAction("android.intent.action.PHONE_STATE");
+                    broadcastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    appContext.sendBroadcast(broadcastIntent);
+                }
 
                 callback.invoke("MS");
-                System.out.println("OSAMA onReceive BEFORE");
+                System.out.println("OSAMA Khakipostsendmodulewhatsapp onReceive BEFORE");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -82,6 +97,20 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
         } catch (Exception ex) {
 //            callback.invoke(ex);
         }
+    }
+
+    public static boolean isAppRunning(final Context context, final String packageName) {
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+        if (procInfos != null)
+        {
+            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                if (processInfo.processName.equals(packageName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
