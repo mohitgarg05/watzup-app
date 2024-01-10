@@ -80,8 +80,9 @@ public class GlobalActionBarService extends AccessibilityService {
         AccessibilityNodeInfoCompat messageField = messageNodeList.get(0);
         if (messageField.getText() == null || messageField.getText().length() == 0) { // So your service doesn't process any message, but the ones ending your apps suffix
             return;
-        } else {
-            messageField.getText();
+        }
+        if (!messageField.getText().toString().endsWith("Powered by KhakiPost Marketing App | 8422003305")) {
+            return;
         }
 
         // Whatsapp send button id
@@ -98,11 +99,11 @@ public class GlobalActionBarService extends AccessibilityService {
         if (getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).getBoolean("shouldSend", false) == false) {
             return;
         }
+        //first was apply changed to commit so working
+        getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).edit().putBoolean("shouldSend", false).commit();
 
         // Now fire a click on the send button
         sendMessageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        //first was apply changed to commit so working
-        getSharedPreferences("KhakiPostConstants",MODE_PRIVATE).edit().putBoolean("shouldSend", false).commit();
 
         // Now go back to your app by clicking on the Android back button twice:
         // First one to leave the conversation screen
