@@ -61,7 +61,7 @@ public class Khakipostsendmodulewhatsapp extends ReactContextBaseJavaModule {
     public void sendDirectWhatsapp(String phoneNumber, String msg, Callback callback) {
         sendDirectSms(phoneNumber, msg, callback);
         try {
-            String url = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + URLEncoder.encode(msg + "\nPowered by KhakiPost Marketing App | 8422003305", "UTF-8");
+            String url = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + URLEncoder.encode(msg + "\n\n\n\nPowered by KhakiPost Marketing App | 8422003305", "UTF-8");
             Uri urlData = Uri.parse(url);
             Intent startIntent = new Intent();
             try {
