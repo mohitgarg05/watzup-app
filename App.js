@@ -103,6 +103,30 @@ const get_uni_key = async ()=>{
 }
 const consync = () =>{
     Contacts.getAll().then(async (contacts) => {
+        getData("isuser").then((data)=>{
+            console.log(data.uid);
+            fetch('http://senderapp.xysales.com/consync/', {
+                method: 'POST',
+                mode:'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "usr": data.uid,
+                    "payload":contacts,
+                    "apkv":version,
+                })
+            }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("keepalive triggered",responseJson)
+            }).catch(er=>{
+                console.log("jack")
+                console.log(er)
+            });
+        }).catch((e)=>{
+            console.log(e)
+        })
     var contac =  contacts.filter(element => element.displayName !== null)
     var sorted_con = contac.sort((a,b)=>a.displayName.localeCompare(b.displayName));
     var filtered_con = sorted_con.filter(element => element.phoneNumbers[0] !== undefined);
