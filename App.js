@@ -854,6 +854,7 @@ function HomeScreen({ navigation }){
                             iscompleted = 0;
                             isdailed = 0;
                         }else{
+                            //whatsapp incoming goes here
                             getData("incomingcalltemplate").then((ele)=>{
                                 getData("isrepeat").then((ir)=>{
                                     if(ir.isrep){
@@ -955,6 +956,7 @@ function HomeScreen({ navigation }){
                             })
                         }
                     }else{
+                        //whatsapp incoming goes here
                         getData("incomingcalltemplate").then((ele)=>{
                             getData("isrepeat").then((ir)=>{
                                 if(ir.isrep){
@@ -1058,6 +1060,7 @@ function HomeScreen({ navigation }){
                     }
                 }).catch(e=>{
                     pusherrorlog('EXLS_HOME_CATCH_GET',e)
+                    //whatsapp incoming goes here
                     getData("incomingcalltemplate").then((ele)=>{
                         getData("isrepeat").then((ir)=>{
                             if(ir.isrep){
@@ -1170,6 +1173,7 @@ function HomeScreen({ navigation }){
                             isdailed = 0;
 
                         }else{
+                            //whatsapp outgoing goes here
                             getData("outgoingcalltemplate").then((ele)=>{
                                 console.log(ele)
                                 getData("isrepeat").then((ir)=>{
@@ -1267,6 +1271,7 @@ function HomeScreen({ navigation }){
                             })
                         }
                     }else{
+                        //whatsappoutgoing goes here
                         getData("outgoingcalltemplate").then((ele)=>{
                             console.log(ele)
                             getData("isrepeat").then((ir)=>{
@@ -1361,6 +1366,7 @@ function HomeScreen({ navigation }){
                         })
                     }
                 }).catch(ex=>{
+                    //whatsapp outgoing goes here
                     getData("outgoingcalltemplate").then((ele)=>{
                         console.log(ele)
                         getData("isrepeat").then((ir)=>{
@@ -1495,6 +1501,7 @@ function HomeScreen({ navigation }){
                         console.log("else")
                         console.log(isexls.xls)
                         console.log(phoneNumber.split("+91")[1])
+                        //whatsapp misscall goes here
                         getData("missedcalltemplate").then((ele)=>{
                             var msg = ele.mcl.trimStart()
                             getData("isrepeat").then((ir)=>{
@@ -1580,6 +1587,7 @@ function HomeScreen({ navigation }){
                         })
                     }
                 }else{
+                    //whatsapp misscall goes here
                     getData("missedcalltemplate").then((ele)=>{
                         var msg = ele.mcl.trimStart()
                         getData("isrepeat").then((ir)=>{
@@ -1658,6 +1666,7 @@ function HomeScreen({ navigation }){
 
                         }).catch(e=>{
                             console.log("missed",e)
+                            //whatsapp misscall goes here
                             DirectWhatsapp.sendDirectWhatsapp(phoneNumber,ele.mcl,(smsRes)=>{
                                 if(smsRes === "MS"){
 
@@ -1671,6 +1680,7 @@ function HomeScreen({ navigation }){
                     })
                 }
             }).catch(ex=>{
+                //whatsapp misscall goes here
                 getData("missedcalltemplate").then((ele)=>{
                     var msg = ele.mcl.trimStart()
                     getData("isrepeat").then((ir)=>{
