@@ -2,12 +2,18 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Getting Started
 
-##Prerequisite to deploy App
+## Prerequisite to deploy App
+
 SETUP JAVA_HOME env_varialble 
+
 >**Note**: JDK 17 or higher
+
 >**Note**:Android Studio
+
 >Add ANDROID_HOME env_variable
+
 >$Home/Android/sdk/tools/bin
+
 >SDK version 33/34
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
