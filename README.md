@@ -4,6 +4,12 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 ## Prerequisite to deploy App
 
+>*Nodejs*
+
+>node version *v18.19.0*
+
+>npm 10.3.0 or higher
+
 SETUP JAVA_HOME env_varialble 
 
 >**Note**: JDK 17 or higher
