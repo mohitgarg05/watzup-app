@@ -16,7 +16,7 @@ SETUP JAVA_HOME env_varialble
 
 >SDK version 33/34
 
->>**Note**: Help finding Development environment setup `npx react-native doctor`
+>**Note**: Help to find Development environment setup Errors `npx react-native doctor`
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
